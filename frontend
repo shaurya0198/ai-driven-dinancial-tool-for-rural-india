@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI वित्तीय सहायक</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="twinkling"></div>
+    
+    <div class="container">
+        <div class="floating-coins">
+            <div class="coin coin1">💰</div>
+            <div class="coin coin2">💵</div>
+            <div class="coin coin3">💸</div>
+            <div class="coin coin4">₹</div>
+            <div class="coin coin5">📈</div>
+            <div class="coin coin6">💹</div>
+        </div>
+        
+        <div class="header">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <div class="logo">💰</div>
+                </div>
+            </div>
+            <h1 class="title">AI वित्तीय सहायक</h1>
+        </div>
+        
+        <p class="subtitle">अपने वित्तीय प्रश्नों के उत्तर पाने के लिए एक विकल्प चुनें</p>
+        
+        <div class="language-toggle">
+            <button class="lang-btn active" data-lang="hi">हिंदी</button>
+            <button class="lang-btn" data-lang="en">English</button>
+        </div>
+        
+        <div class="buttons-grid">
+            <div class="button-wrapper">
+                <div class="button bank-button" onclick="sendMessage('Check Bank Balance')">
+                    <div class="button-icon">🏦</div>
+                    <div class="button-text">
+                        <div class="button-title">बैंक बैलेंस</div>
+                        <div class="button-subtitle">Bank Balance</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+            
+            <div class="button-wrapper">
+                <div class="button loan-button" onclick="sendMessage('Loan Help')">
+                    <div class="button-icon">💰</div>
+                    <div class="button-text">
+                        <div class="button-title">ऋण सहायता</div>
+                        <div class="button-subtitle">Loan Help</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+            
+            <div class="button-wrapper">
+                <div class="button govt-button" onclick="sendMessage('Govt Schemes')">
+                    <div class="button-icon">📜</div>
+                    <div class="button-text">
+                        <div class="button-title">सरकारी योजनाएँ</div>
+                        <div class="button-subtitle">Govt Schemes</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+            
+            <div class="button-wrapper">
+                <div class="button scam-button" onclick="sendMessage('Scam Alert')">
+                    <div class="button-icon">⚠</div>
+                    <div class="button-text">
+                        <div class="button-title">धोखाधड़ी अलर्ट</div>
+                        <div class="button-subtitle">Scam Alert</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+            
+            <div class="button-wrapper">
+                <div class="button invest-button" onclick="sendMessage('Investment Options')">
+                    <div class="button-icon">📊</div>
+                    <div class="button-text">
+                        <div class="button-title">निवेश विकल्प</div>
+                        <div class="button-subtitle">Investment Options</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+            
+            <div class="button-wrapper">
+                <div class="button insurance-button" onclick="sendMessage('Insurance Plans')">
+                    <div class="button-icon">🛡</div>
+                    <div class="button-text">
+                        <div class="button-title">बीमा योजनाएँ</div>
+                        <div class="button-subtitle">Insurance Plans</div>
+                    </div>
+                    <div class="button-shine"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="quick-actions">
+            <div class="quick-action" onclick="sendMessage('UPI Transfer')">
+                <div class="qa-icon">💳</div>
+                <div class="qa-text">UPI Transfer</div>
+            </div>
+            <div class="quick-action" onclick="sendMessage('Bill Payment')">
+                <div class="qa-icon">📝</div>
+                <div class="qa-text">Bill Payment</div>
+            </div>
+            <div class="quick-action" onclick="sendMessage('Mobile Recharge')">
+                <div class="qa-icon">📱</div>
+                <div class="qa-text">Mobile Recharge</div>
+            </div>
+            <div class="quick-action" onclick="sendMessage('Gold Rate')">
+                <div class="qa-icon">🪙</div>
+                <div class="qa-text">Gold Rate</div>
+            </div>
+        </div>
+        
+        <button class="mic-button" onclick="startListening()">
+            <div class="pulse-ring"></div>
+            <span class="mic-icon">🎙</span>
+            <span class="mic-text">बोलें / Speak</span>
+        </button>
+        
+        <div class="input-wrapper">
+            <input type="text" id="userInput" placeholder="अपना प्रश्न यहां टाइप करें / Type your question here..." />
+            <button class="send-button" onclick="sendUserInput()">
+                <span>📤</span>
+            </button>
+        </div>
+        
+        <div class="chat-wrapper">
+            <div class="chat-header">
+                <div class="chat-title">चैट / Chat</div>
+                <div class="chat-controls">
+                    <button class="clear-chat" onclick="clearChat()">Clear</button>
+                    <div class="chat-status">ऑनलाइन / Online</div>
+                </div>
+            </div>
+            <div class="chat-container" id="chatBox">
+                <div class="welcome-message bot-message">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <p>नमस्ते! आपकी सहायता के लिए मैं यहां हूं। कृपया ऊपर दिए गए विकल्पों में से एक चुनें।</p>
+                        <p>Hello! I'm here to help you. Please select one of the options above.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="notification-panel" id="notificationPanel">
+            <div class="notification-header">
+                <span class="notification-title">नवीनतम अपडेट / Latest Updates</span>
+                <span class="close-notification" onclick="toggleNotificationPanel()">×</span>
+            </div>
+            <div class="notification-body">
+                <div class="notification-item">
+                    <div class="notification-icon">🔔</div>
+                    <div class="notification-content">
+                        <div class="notification-text">नई सरकारी योजना लॉन्च हुई! / New government scheme launched!</div>
+                        <div class="notification-time">2 घंटे पहले / 2 hours ago</div>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <div class="notification-icon">⚠</div>
+                    <div class="notification-content">
+                        <div class="notification-text">नया UPI स्कैम अलर्ट! / New UPI scam alert!</div>
+                        <div class="notification-time">5 घंटे पहले / 5 hours ago</div>
+                    </div>
+                </div>
+                <div class="notification-item">
+                    <div class="notification-icon">💰</div>
+                    <div class="notification-content">
+                        <div class="notification-text">बैंक दरों में बदलाव! / Change in bank rates!</div>
+                        <div class="notification-time">1 दिन पहले / 1 day ago</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <button class="footer-btn" onclick="toggleNotificationPanel()">
+                <span class="footer-icon">🔔</span>
+                <span class="footer-text">अपडेट / Updates</span>
+            </button>
+            <button class="footer-btn" onclick="showFAQ()">
+                <span class="footer-icon">❓</span>
+                <span class="footer-text">सहायता / Help</span>
+            </button>
+            <button class="footer-btn" onclick="toggleDarkMode()">
+                <span class="footer-icon" id="themeIcon">🌙</span>
+                <span class="footer-text">थीम / Theme</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- FAQ Modal -->
+    <div class="modal" id="faqModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>अक्सर पूछे जाने वाले प्रश्न / FAQs</h2>
+                <span class="close-modal" onclick="closeModal('faqModal')">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="faq-item">
+                    <div class="faq-question">इस ऐप का उपयोग कैसे करें? / How to use this app?</div>
+                    <div class="faq-answer">बस किसी भी बटन पर क्लिक करें या माइक बटन का उपयोग करके अपना प्रश्न पूछें। / Simply click on any button or use the mic button to ask your question.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">क्या यह ऐप सुरक्षित है? / Is this app secure?</div>
+                    <div class="faq-answer">हां, यह ऐप पूरी तरह से सुरक्षित है और आपका डेटा किसी के साथ साझा नहीं करता है। / Yes, this app is completely secure and doesn't share your data with anyone.</div>
+                </div>
+                <div class="faq-item">
+                    <div class="faq-question">मैं अपनी भाषा कैसे बदलूं? / How to change my language?</div>
+                    <div class="faq-answer">ऐप के शीर्ष पर स्थित भाषा बटन का उपयोग करें। / Use the language buttons located at the top of the app.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
