@@ -47,8 +47,10 @@ Steps
 
 Clone the repository
 
-git clone https://github.com/your-username/ai-financial-assistant.git
-cd ai-financial-assistant
+git clone https://github.com/shaurya0198/ai-driven-dinancial-tool-for-rural-india
+.git
+cd ai-driven-dinancial-tool-for-rural-india
+
 
 Install Backend Dependencies
 
