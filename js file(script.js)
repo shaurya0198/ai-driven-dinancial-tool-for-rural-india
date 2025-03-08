@@ -1,0 +1,408 @@
+// Global variables
+let currentLanguage = 'hi'; // Default language is Hindi
+let isDarkMode = false;
+let isNotificationPanelOpen = false;
+
+// DOM ready function
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize elements
+    setupLanguageToggle();
+    setupTheme();
+    
+    // Setup keyboard event for input
+    document.getElementById('userInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendUserInput();
+        }
+    });
+});
+
+// Language toggle functionality
+function setupLanguageToggle() {
+    const langButtons = document.querySelectorAll('.lang-btn');
+    
+    langButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const lang = this.getAttribute('data-lang');
+            
+            // Skip if already selected
+            if (lang === currentLanguage) return;
+            
+            // Update active button
+            langButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Update language
+            currentLanguage = lang;
+            
+            // Update UI text based on language
+            updateUILanguage();
+        });
+    });
+}
+
+// Update UI text based on selected language
+function updateUILanguage() {
+    const elements = {
+        title: { hi: 'AI वित्तीय सहायक', en: 'AI Financial Assistant' },
+        subtitle: { hi: 'अपने वित्तीय प्रश्नों के उत्तर पाने के लिए एक विकल्प चुनें', en: 'Choose an option to get answers to your financial questions' },
+        micText: { hi: 'बोलें / Speak', en: 'Speak' },
+        inputPlaceholder: { hi: 'अपना प्रश्न यहां टाइप करें / Type your question here...', en: 'Type your question here...' },
+        chatTitle: { hi: 'चैट / Chat', en: 'Chat' },
+        chatStatus: { hi: 'ऑनलाइन / Online', en: 'Online' },
+        updatesBtnText: { hi: 'अपडेट / Updates', en: 'Updates' },
+        helpBtnText: { hi: 'सहायता / Help', en: 'Help' },
+        themeBtnText: { hi: 'थीम / Theme', en: 'Theme' },
+        clearChat: { hi: 'साफ़ करें', en: 'Clear' },
+        notificationTitle: { hi: 'नवीनतम अपडेट / Latest Updates', en: 'Latest Updates' }
+    };
+
+    // Button texts
+    const buttonTexts = {
+        bank: { title: { hi: 'बैंक बैलेंस', en: 'Bank Balance' }, subtitle: { hi: 'Bank Balance', en: '' } },
+        loan: { title: { hi: 'ऋण सहायता', en: 'Loan Help' }, subtitle: { hi: 'Loan Help', en: '' } },
+        govt: { title: { hi: 'सरकारी योजनाएँ', en: 'Govt Schemes' }, subtitle: { hi: 'Govt Schemes', en: '' } },
+        scam: { title: { hi: 'धोखाधड़ी अलर्ट', en: 'Scam Alert' }, subtitle: { hi: 'Scam Alert', en: '' } },
+        invest: { title: { hi: 'निवेश विकल्प', en: 'Investment Options' }, subtitle: { hi: 'Investment Options', en: '' } },
+        insurance: { title: { hi: 'बीमा योजनाएँ', en: 'Insurance Plans' }, subtitle: { hi: 'Insurance Plans', en: '' } }
+    };
+
+    // Quick actions
+    const qaTexts = {
+        upi: { hi: 'UPI Transfer', en: 'UPI Transfer' },
+        bill: { hi: 'Bill Payment', en: 'Bill Payment' },
+        mobile: { hi: 'Mobile Recharge', en: 'Mobile Recharge' },
+        gold: { hi: 'Gold Rate', en: 'Gold Rate' }
+    };
+
+    // Update main UI elements
+    document.querySelector('.title').textContent = elements.title[currentLanguage];
+    document.querySelector('.subtitle').textContent = elements.subtitle[currentLanguage];
+    document.querySelector('.mic-text').textContent = elements.micText[currentLanguage];
+    document.getElementById('userInput').placeholder = elements.inputPlaceholder[currentLanguage];
+    document.querySelector('.chat-title').textContent = elements.chatTitle[currentLanguage];
+    document.querySelector('.chat-status').textContent = elements.chatStatus[currentLanguage];
+    document.querySelector('.notification-title').textContent = elements.notificationTitle[currentLanguage];
+    
+    // Update footer buttons
+    document.querySelectorAll('.footer-btn .footer-text')[0].textContent = elements.updatesBtnText[currentLanguage];
+    document.querySelectorAll('.footer-btn .footer-text')[1].textContent = elements.helpBtnText[currentLanguage];
+    document.querySelectorAll('.footer-btn .footer-text')[2].textContent = elements.themeBtnText[currentLanguage];
+    
+    // Update clear button
+    document.querySelector('.clear-chat').textContent = elements.clearChat[currentLanguage];
+    
+    // Update button texts
+    const buttonElements = document.querySelectorAll('.button-wrapper');
+    buttonElements[0].querySelector('.button-title').textContent = buttonTexts.bank.title[currentLanguage];
+    buttonElements[0].querySelector('.button-subtitle').textContent = buttonTexts.bank.subtitle[currentLanguage];
+    buttonElements[1].querySelector('.button-title').textContent = buttonTexts.loan.title[currentLanguage];
+    buttonElements[1].querySelector('.button-subtitle').textContent = buttonTexts.loan.subtitle[currentLanguage];
+    buttonElements[2].querySelector('.button-title').textContent = buttonTexts.govt.title[currentLanguage];
+    buttonElements[2].querySelector('.button-subtitle').textContent = buttonTexts.govt.subtitle[currentLanguage];
+    buttonElements[3].querySelector('.button-title').textContent = buttonTexts.scam.title[currentLanguage];
+    buttonElements[3].querySelector('.button-subtitle').textContent = buttonTexts.scam.subtitle[currentLanguage];
+    buttonElements[4].querySelector('.button-title').textContent = buttonTexts.invest.title[currentLanguage];
+    buttonElements[4].querySelector('.button-subtitle').textContent = buttonTexts.invest.subtitle[currentLanguage];
+    buttonElements[5].querySelector('.button-title').textContent = buttonTexts.insurance.title[currentLanguage];
+    buttonElements[5].querySelector('.button-subtitle').textContent = buttonTexts.insurance.subtitle[currentLanguage];
+    
+    // Update quick action texts
+    const qaElements = document.querySelectorAll('.quick-action .qa-text');
+    qaElements[0].textContent = qaTexts.upi[currentLanguage];
+    qaElements[1].textContent = qaTexts.bill[currentLanguage];
+    qaElements[2].textContent = qaTexts.mobile[currentLanguage];
+    qaElements[3].textContent = qaTexts.gold[currentLanguage];
+    
+    // Update initial bot message if it exists
+    const welcomeMessage = document.querySelector('.welcome-message .message-content');
+    if (welcomeMessage) {
+        if (currentLanguage === 'hi') {
+            welcomeMessage.innerHTML = `<p>नमस्ते! आपकी सहायता के लिए मैं यहां हूं। कृपया ऊपर दिए गए विकल्पों में से एक चुनें।</p>
+                                       <p>Hello! I'm here to help you. Please select one of the options above.</p>`;
+        } else {
+            welcomeMessage.innerHTML = <p>Hello! I'm here to help you. Please select one of the options above.</p>;
+        }
+    }
+}
+
+// Toggle dark mode
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    
+    // Update theme icon
+    const themeIcon = document.getElementById('themeIcon');
+    themeIcon.textContent = isDarkMode ? '☀' : '🌙';
+    
+    // Save preference
+    localStorage.setItem('darkMode', isDarkMode);
+}
+
+// Setup theme based on saved preference
+function setupTheme() {
+    const savedTheme = localStorage.getItem('darkMode');
+    if (savedTheme !== null) {
+        isDarkMode = savedTheme === 'true';
+        document.body.classList.toggle('dark-mode', isDarkMode);
+        document.getElementById('themeIcon').textContent = isDarkMode ? '☀' : '🌙';
+    }
+}
+
+// Toggle notification panel
+function toggleNotificationPanel() {
+    isNotificationPanelOpen = !isNotificationPanelOpen;
+    const panel = document.getElementById('notificationPanel');
+    panel.style.transform = isNotificationPanelOpen ? 'translateY(0)' : 'translateY(100%)';
+}
+
+// Show FAQ modal
+function showFAQ() {
+    document.getElementById('faqModal').style.display = 'flex';
+}
+
+// Close any modal
+function closeModal(modalId) {
+    document.getElementById(modalId).style.display = 'none';
+}
+
+// Send message to chat from buttons
+function sendMessage(message) {
+    addUserMessage(message);
+    
+    // Simulate bot thinking
+    showTypingIndicator();
+    
+    // Generate response based on message type
+    setTimeout(() => {
+        removeTypingIndicator();
+        
+        let botResponse;
+        switch(message) {
+            case 'Check Bank Balance':
+                botResponse = currentLanguage === 'hi' 
+                    ? 'अपना बैंक बैलेंस जानने के लिए, कृपया अपना खाता नंबर या यूजरनेम दर्ज करें।'
+                    : 'To check your bank balance, please enter your account number or username.';
+                break;
+            case 'Loan Help':
+                botResponse = currentLanguage === 'hi'
+                    ? 'हम आपको विभिन्न प्रकार के लोन ऑफ़र कर सकते हैं। कृपया बताएं कि आपको किस प्रकार का लोन चाहिए? (होम लोन, कार लोन, एजुकेशन लोन, पर्सनल लोन)'
+                    : 'We can offer you various types of loans. Please specify what type of loan you need? (Home Loan, Car Loan, Education Loan, Personal Loan)';
+                break;
+            case 'Govt Schemes':
+                botResponse = currentLanguage === 'hi'
+                    ? 'भारत सरकार द्वारा कई योजनाएँ चलाई जा रही हैं। आप किस प्रकार की योजना के बारे में जानना चाहते हैं? (पेंशन, शिक्षा, स्वास्थ्य, वित्तीय सहायता)'
+                    : 'There are many schemes being run by the Government of India. What type of scheme are you interested in? (Pension, Education, Health, Financial Assistance)';
+                break;
+            case 'Scam Alert':
+                botResponse = currentLanguage === 'hi'
+                    ? 'सावधान रहें! हाल ही में कई प्रकार के वित्तीय धोखाधड़ी के मामले सामने आए हैं। कभी भी अपना OTP, पासवर्ड या पिन किसी के साथ साझा न करें।'
+                    : 'Stay alert! There have been many cases of financial fraud recently. Never share your OTP, password, or PIN with anyone.';
+                break;
+            case 'Investment Options':
+                botResponse = currentLanguage === 'hi'
+                    ? 'आप कई प्रकार के निवेश विकल्पों में से चुन सकते हैं: फिक्स्ड डिपॉजिट, म्यूचुअल फंड, स्टॉक मार्केट, गोल्ड, या रियल एस्टेट। आप किसमें निवेश करना चाहते हैं?'
+                    : 'You can choose from various investment options: Fixed Deposits, Mutual Funds, Stock Market, Gold, or Real Estate. Which one would you like to invest in?';
+                break;
+            case 'Insurance Plans':
+                botResponse = currentLanguage === 'hi'
+                    ? 'बीमा आपके भविष्य को सुरक्षित करने का एक महत्वपूर्ण तरीका है। हम हेल्थ इंश्योरेंस, लाइफ इंश्योरेंस, और मोटर इंश्योरेंस प्रदान करते हैं। आप किस प्रकार का बीमा लेना चाहते हैं?'
+                    : 'Insurance is an important way to secure your future. We offer Health Insurance, Life Insurance, and Motor Insurance. What type of insurance would you like to get?';
+                break;
+            case 'UPI Transfer':
+                botResponse = currentLanguage === 'hi'
+                    ? 'UPI ट्रांसफर के लिए, कृपया प्राप्तकर्ता का UPI आईडी दर्ज करें।'
+                    : 'For UPI transfer, please enter the recipient\'s UPI ID.';
+                break;
+            case 'Bill Payment':
+                botResponse = currentLanguage === 'hi'
+                    ? 'बिल भुगतान के लिए, कृपया बिल प्रकार चुनें: बिजली, पानी, गैस, या मोबाइल।'
+                    : 'For bill payment, please select the bill type: Electricity, Water, Gas, or Mobile.';
+                break;
+            case 'Mobile Recharge':
+                botResponse = currentLanguage === 'hi'
+                    ? 'मोबाइल रिचार्ज के लिए, कृपया अपना मोबाइल नंबर और ऑपरेटर दर्ज करें।'
+                    : 'For mobile recharge, please enter your mobile number and operator.';
+                break;
+            case 'Gold Rate':
+                botResponse = currentLanguage === 'hi'
+                    ? 'आज सोने का भाव: 24 कैरेट - ₹5,800/ग्राम, 22 कैरेट - ₹5,300/ग्राम (नोट: ये दरें केवल उदाहरण हैं)'
+                    : 'Today\'s gold rate: 24 Carat - ₹5,800/gram, 22 Carat - ₹5,300/gram (Note: These rates are examples only)';
+                break;
+            default:
+                botResponse = currentLanguage === 'hi'
+                    ? 'मैं आपकी कैसे मदद कर सकता हूं?'
+                    : 'How can I help you?';
+        }
+        
+        addBotMessage(botResponse);
+    }, 1000);
+}
+
+// Send user input from text field
+function sendUserInput() {
+    const userInput = document.getElementById('userInput');
+    const message = userInput.value.trim();
+    
+    if (message) {
+        addUserMessage(message);
+        userInput.value = '';
+        
+        // Simulate bot thinking
+        showTypingIndicator();
+        
+        // Simple response based on keywords in user input
+        setTimeout(() => {
+            removeTypingIndicator();
+            
+            let botResponse;
+            const lowerCaseMsg = message.toLowerCase();
+            
+            if (lowerCaseMsg.includes('hello') || lowerCaseMsg.includes('hi') || lowerCaseMsg.includes('नमस्ते')) {
+                botResponse = currentLanguage === 'hi' 
+                    ? 'नमस्ते! मैं आपकी कैसे सहायता कर सकता हूं?'
+                    : 'Hello! How can I assist you today?';
+            } else if (lowerCaseMsg.includes('balance') || lowerCaseMsg.includes('बैलेंस')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'अपना बैंक बैलेंस जानने के लिए, कृपया अपना खाता नंबर या यूजरनेम दर्ज करें।'
+                    : 'To check your bank balance, please enter your account number or username.';
+            } else if (lowerCaseMsg.includes('loan') || lowerCaseMsg.includes('ऋण') || lowerCaseMsg.includes('कर्ज')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'हम आपको विभिन्न प्रकार के लोन ऑफ़र कर सकते हैं। कृपया बताएं कि आपको किस प्रकार का लोन चाहिए?'
+                    : 'We can offer you various types of loans. Please specify what type of loan you need?';
+            } else if (lowerCaseMsg.includes('invest') || lowerCaseMsg.includes('निवेश')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'आप कई प्रकार के निवेश विकल्पों में से चुन सकते हैं। आपका बजट और लक्ष्य क्या है?'
+                    : 'You can choose from various investment options. What is your budget and goal?';
+            } else if (lowerCaseMsg.includes('scam') || lowerCaseMsg.includes('fraud') || lowerCaseMsg.includes('धोखा')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'सावधान रहें! कभी भी अपनी बैंकिंग जानकारी, OTP या पासवर्ड किसी के साथ साझा न करें।'
+                    : 'Stay alert! Never share your banking information, OTP, or password with anyone.';
+            } else if (lowerCaseMsg.includes('insurance') || lowerCaseMsg.includes('बीमा')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'हम विभिन्न प्रकार के बीमा प्लान प्रदान करते हैं। आप किस प्रकार का बीमा लेना चाहते हैं?'
+                    : 'We offer various types of insurance plans. What type of insurance would you like to get?';
+            } else if (lowerCaseMsg.includes('help') || lowerCaseMsg.includes('सहायता')) {
+                botResponse = currentLanguage === 'hi'
+                    ? 'मैं वित्तीय मामलों में आपकी सहायता के लिए यहां हूं। कृपया अपना विशिष्ट प्रश्न पूछें।'
+                    : 'I\'m here to help you with financial matters. Please ask your specific question.';
+            } else {
+                botResponse = currentLanguage === 'hi'
+                    ? 'मुझे आपका प्रश्न समझ में नहीं आया। क्या आप इसे अलग तरीके से पूछ सकते हैं?'
+                    : 'I didn\'t understand your question. Could you phrase it differently?';
+            }
+            
+            addBotMessage(botResponse);
+        }, 1500);
+    }
+}
+
+// Add user message to chat
+function addUserMessage(message) {
+    const chatBox = document.getElementById('chatBox');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message user-message';
+    messageDiv.innerHTML = <div class="message-content">${message}</div>;
+    chatBox.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Add bot message to chat
+function addBotMessage(message) {
+    const chatBox = document.getElementById('chatBox');
+    const messageDiv = document.createElement('div');
+    messageDiv.className = 'message bot-message';
+    messageDiv.innerHTML = `
+        <div class="message-avatar">🤖</div>
+        <div class="message-content">${message}</div>
+    `;
+    chatBox.appendChild(messageDiv);
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Show typing indicator
+function showTypingIndicator() {
+    const chatBox = document.getElementById('chatBox');
+    const typingDiv = document.createElement('div');
+    typingDiv.className = 'message bot-message typing-indicator-container';
+    typingDiv.id = 'typingIndicator';
+    typingDiv.innerHTML = `
+        <div class="message-avatar">🤖</div>
+        <div class="typing-indicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    `;
+    chatBox.appendChild(typingDiv);
+    
+    // Scroll to bottom
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Remove typing indicator
+function removeTypingIndicator() {
+    const typingIndicator = document.getElementById('typingIndicator');
+    if (typingIndicator) {
+        typingIndicator.remove();
+    }
+}
+
+// Clear chat history
+function clearChat() {
+    const chatBox = document.getElementById('chatBox');
+    
+    // Remove all messages except welcome message
+    while (chatBox.children.length > 1) {
+        chatBox.removeChild(chatBox.lastChild);
+    }
+}
+
+// Voice recognition functionality (placeholder - requires Web Speech API)
+function startListening() {
+    // Check if browser supports speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+        
+        recognition.lang = currentLanguage === 'hi' ? 'hi-IN' : 'en-US';
+        recognition.interimResults = false;
+        
+        // Add animation to mic button to show it's listening
+        const micButton = document.querySelector('.mic-button');
+        micButton.classList.add('listening');
+        
+        recognition.onresult = function(event) {
+            const speechResult = event.results[0][0].transcript;
+            document.getElementById('userInput').value = speechResult;
+            sendUserInput();
+            
+            // Remove animation
+            micButton.classList.remove('listening');
+        };
+        
+        recognition.onerror = function() {
+            // Remove animation
+            micButton.classList.remove('listening');
+            
+            addBotMessage(currentLanguage === 'hi' 
+                ? 'मुझे आपकी आवाज़ समझने में समस्या हो रही है। कृपया टेक्स्ट इनपुट का उपयोग करें।'
+                : 'I\'m having trouble understanding your voice. Please use text input instead.');
+        };
+        
+        recognition.onend = function() {
+            // Remove animation
+            micButton.classList.remove('listening');
+        };
+        
+        recognition.start();
+    } else {
+        addBotMessage(currentLanguage === 'hi' 
+            ? 'आपका ब्राउज़र वॉइस रिकग्निशन का समर्थन नहीं करता है। कृपया टेक्स्ट इनपुट का उपयोग करें।'
+            : 'Your browser doesn\'t support voice recognition. Please use text input.');
+    }
+}
